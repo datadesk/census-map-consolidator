@@ -1,3 +1,8 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Where it happens.
+"""
 import sys
 import pathlib
 import zipfile

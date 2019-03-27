@@ -12,11 +12,12 @@ setup(
     packages=("census_consolidator",),
     install_requires=(
         "fake-useragent",
-        "geopandas",
+        "geopandas"
     ),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: MIT License',
     ],
