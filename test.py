@@ -46,10 +46,10 @@ class CensusConsolidateTest(unittest.TestCase):
         self.consolidate_client.write(self.data_dir.joinpath("dtla.shp"))
         self.consolidate_client.write(self.data_dir.joinpath("dtla.geojson"))
 
-    # def test_download_shapefile(self):
-    #     path = self.download_client.download_zipfile(self.osceola_county_ia)
-    #     self.download_client.download_zipfile(self.osceola_county_ia)
-    #     self.download_client.unzip(path)
+    def test_download_shapefile(self):
+        path = self.download_client.download_zipfile(self.osceola_county_ia)
+        self.download_client.download_zipfile(self.osceola_county_ia)
+        self.download_client.unzip(path)
 
     def tearDown(self):
         for p in pathlib.Path("census_consolidator/data").glob("*"):
