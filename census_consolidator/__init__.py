@@ -8,9 +8,8 @@ import pathlib
 import zipfile
 import logging
 import collections
-import urllib.request
+from ftplib import FTP
 import geopandas as gpd
-from fake_useragent import UserAgent
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +18,6 @@ class BlockConsolidator(object):
     Consolidates the provided Census blocks into a new shape.
     """
     THIS_DIR = pathlib.Path(__file__).parent
-    USER_AGENT = UserAgent()
 
     def __init__(self, *block_list, data_dir=None):
         self.block_list = block_list
@@ -123,33 +121,24 @@ class BlockConsolidator(object):
 
         Returns the path to the ZIP file.
         """
-        path = self.data_dir.joinpath(zip_name)
+        # Check if the zip file already exists
+        zip_path = self.data_dir.joinpath(zip_name)
+        if zip_path.exists():
+            logger.debug(f"ZIP file already exists at {zip_path}")
+            return zip_path
 
-        if path.exists():
-            logger.debug(f"ZIP file already exists at {path}")
-            return path
-
+        # If it doesn't, download it from the Census FTP
         url = f"ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/{zip_name}"
-        logger.debug(f"Downloading {url} to {path}")
+        logger.debug(f"Downloading {url} to {zip_path}")
+        ftp = FTP("ftp2.census.gov")
+        ftp.login()
+        ftp.cwd("geo/tiger/TIGER2010/TABBLOCK/2010/")
+        with open(zip_path, "wb") as fh:
+            ftp.retrbinary("RETR " + zip_name, fh.write)
+        ftp.quit()
 
-        req = urllib.request.Request(
-            url,
-            data=None,
-            headers={
-                'User-Agent': self.USER_AGENT.random
-            }
-        )
-        u = urllib.request.urlopen(req)
-        with open(path, 'wb') as f:
-            file_size_dl = 0
-            block_sz = 8192
-            while True:
-                buffer = u.read(block_sz)
-                if not buffer:
-                    break
-                file_size_dl += len(buffer)
-                f.write(buffer)
-        return path
+        # Return the path
+        return zip_path
 
     def unzip(self, zip_name):
         """
@@ -158,9 +147,10 @@ class BlockConsolidator(object):
         shp_path = self.data_dir.joinpath(zip_name.replace(".zip", ".shp"))
         if shp_path.exists():
             logger.debug(f"SHP already unzipped at {shp_path}")
-            return
+            return shp_path
 
         zip_path = self.data_dir.joinpath(zip_name)
         logger.debug(f"Unzipping {zip_name} to {self.data_dir}")
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extractall(self.data_dir)
+        return shp_path
