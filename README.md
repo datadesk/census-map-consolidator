@@ -52,3 +52,11 @@ Or shapefiles.
 ```python
 >>> c.write("./your-new-shape.shp")
 ```
+
+That's it. You can inspect your work however you like. But [geojsonio](https://github.com/mapbox/geojsonio-cli) is handy.
+
+```bash
+$ geojsonio < your-new-shape.geojson
+```
+
+![dtla](test_data/dtla.png)

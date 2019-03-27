@@ -1,7 +1,7 @@
 .PHONY: test ship
 
 test:
-	flake8 cpi
+	flake8 census_consolidator
 	coverage run test.py
 	coverage report -m
 

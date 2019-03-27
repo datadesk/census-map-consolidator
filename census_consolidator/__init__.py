@@ -3,7 +3,7 @@
 """
 Where it happens.
 """
-import sys
+import json
 import pathlib
 import zipfile
 import logging
@@ -38,9 +38,11 @@ class BlockConsolidator(object):
         Writes the consolidated SHP file to the provided path.
         """
         if '.geojson' in str(path):
-            self.consolidated_shp.to_file(path, driver="GeoJSON")
+            geojson = json.loads(self.consolidated_shp[['geometry']].to_crs(epsg=4326).to_json())
+            with open(path, 'w') as f:
+                f.write(json.dumps(geojson, indent=4))
         else:
-            self.consolidated_shp.to_file(path)
+            self.consolidated_shp[['geometry']].to_file(path)
 
     def consolidate(self):
         """
@@ -56,19 +58,19 @@ class BlockConsolidator(object):
         shp_path_list = [self.data_dir.joinpath(shp) for shp in self.shp_list]
         gdf_list = []
         for path in shp_path_list:
-            print(f"Reading in {path}")
+            logger.debug(f"Reading in {path}")
             gdf_list.append(gpd.read_file(path))
         gdf = gpd.pd.concat(gdf_list)
-        print(f"Loaded DataFrame with {len(gdf)} blocks")
+        logger.debug(f"Loaded DataFrame with {len(gdf)} blocks")
 
         # Filter them down to only those in the block list
-        print(f"Filtering down to the {len(self.block_list)} GEOIDs in the provided block list")
+        logger.debug(f"Filtering down to the {len(self.block_list)} GEOIDs in the provided block list")
         gdf.loc[gdf.GEOID10.isin(self.block_list), 'to_dissolve'] = 1
         filtered_gdf = gdf[gdf.to_dissolve == 1]
-        print(f"{len(filtered_gdf)} blocks found")
+        logger.debug(f"{len(filtered_gdf)} blocks found")
 
         # Dissolve the shapes together
-        print("Dissolving the geometries")
+        logger.debug("Dissolving the geometries")
         self.consolidated_shp = filtered_gdf.dissolve(by='to_dissolve')
 
     def resolve_counties(self):
@@ -115,11 +117,11 @@ class BlockConsolidator(object):
         path = self.data_dir.joinpath(zip_name)
 
         if path.exists():
-            print(f"ZIP file already exists at {path}")
+            logger.debug(f"ZIP file already exists at {path}")
             return path
 
         url = f"ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/{zip_name}"
-        print(f"Downloading {url} to {path}")
+        logger.debug(f"Downloading {url} to {path}")
 
         req = urllib.request.Request(
             url,
@@ -130,7 +132,6 @@ class BlockConsolidator(object):
         )
         u = urllib.request.urlopen(req)
         with open(path, 'wb') as f:
-            file_size = int(u.headers["Content-Length"])
             file_size_dl = 0
             block_sz = 8192
             while True:
@@ -147,10 +148,10 @@ class BlockConsolidator(object):
         """
         shp_path = self.data_dir.joinpath(zip_name.replace(".zip", ".shp"))
         if shp_path.exists():
-            print(f"SHP already unzipped at {shp_path}")
+            logger.debug(f"SHP already unzipped at {shp_path}")
             return
 
         zip_path = self.data_dir.joinpath(zip_name)
-        print(f"Unzipping {zip_name} to {self.data_dir}")
+        logger.debug(f"Unzipping {zip_name} to {self.data_dir}")
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extractall(self.data_dir)
