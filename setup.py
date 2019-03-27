@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='census-consolidator',
-    version='0.0.1',
+    version='0.0.2',
     description="Combine Census blocks into new shapes",
     author='Ben Welsh',
     author_email='ben.welsh@gmail.com',

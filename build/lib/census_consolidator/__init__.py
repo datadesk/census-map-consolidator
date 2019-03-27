@@ -38,11 +38,11 @@ class BlockConsolidator(object):
         Writes the consolidated SHP file to the provided path.
         """
         if '.geojson' in str(path):
-            geojson = json.loads(self.consolidated_shp.to_json())
+            geojson = json.loads(self.consolidated_shp[['geometry']].to_crs(epsg=4326).to_json())
             with open(path, 'w') as f:
                 f.write(json.dumps(geojson, indent=4))
         else:
-            self.consolidated_shp.to_file(path)
+            self.consolidated_shp[['geometry']].to_file(path)
 
     def consolidate(self):
         """
@@ -71,16 +71,7 @@ class BlockConsolidator(object):
 
         # Dissolve the shapes together
         logger.debug("Dissolving the geometries")
-        dissolved_shape = filtered_gdf.dissolve(by='to_dissolve')
-
-        # Trime and project
-        consolidated_shp = dissolved_shape[['geometry']].to_crs(epsg=4326)
-
-        # Hook it to the instance
-        self.consolidated_shp = consolidated_shp
-
-        # And pass it back for anybody running this inside a bigger script
-        return consolidated_shp
+        self.consolidated_shp = filtered_gdf.dissolve(by='to_dissolve')
 
     def resolve_counties(self):
         """
