@@ -9,7 +9,6 @@ coverage = "*"
 twine = "*"
 
 [packages]
-fake-useragent = "*"
 geopandas = "*"
 
 [requires]

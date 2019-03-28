@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='census-consolidator',
-    version='0.0.2',
+    version='0.0.3',
     description="Combine Census blocks into new shapes",
     author='Ben Welsh',
     author_email='ben.welsh@gmail.com',
@@ -11,7 +11,6 @@ setup(
     license="MIT",
     packages=("census_consolidator",),
     install_requires=(
-        "fake-useragent",
         "geopandas"
     ),
     classifiers=[
