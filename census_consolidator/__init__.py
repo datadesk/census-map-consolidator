@@ -8,8 +8,8 @@ import pathlib
 import zipfile
 import logging
 import collections
-from ftplib import FTP
 import geopandas as gpd
+from urllib.request import urlretrieve
 logger = logging.getLogger(__name__)
 
 
@@ -128,14 +128,9 @@ class BlockConsolidator(object):
             return zip_path
 
         # If it doesn't, download it from the Census FTP
-        url = f"ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/{zip_name}"
+        url = f"https://www2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/{zip_name}"
         logger.debug(f"Downloading {url} to {zip_path}")
-        ftp = FTP("ftp2.census.gov")
-        ftp.login()
-        ftp.cwd("geo/tiger/TIGER2010/TABBLOCK/2010/")
-        with open(zip_path, "wb") as fh:
-            ftp.retrbinary("RETR " + zip_name, fh.write)
-        ftp.quit()
+        urlretrieve(url, zip_path)
 
         # Return the path
         return zip_path
@@ -144,15 +139,13 @@ class BlockConsolidator(object):
         """
         Unzip the provided ZIP file.
         """
-        print(zip_name)
-        shp_name = zip_name.replace(".zip", ".shp")
-        shp_path = self.data_dir.joinpath(shp_name)
+        shp_path = pathlib.Path(zip_name.replace(".zip", ".shp"))
         if shp_path.exists():
             logger.debug(f"SHP already unzipped at {shp_path}")
             return shp_path
 
         zip_path = self.data_dir.joinpath(zip_name)
-        logger.debug(f"Unzipping {zip_name} to {self.data_dir}")
+        logger.debug(f"Unzipping {zip_path} to {self.data_dir}")
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extractall(self.data_dir)
         return shp_path
