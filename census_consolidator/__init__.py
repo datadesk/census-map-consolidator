@@ -144,7 +144,9 @@ class BlockConsolidator(object):
         """
         Unzip the provided ZIP file.
         """
-        shp_path = self.data_dir.joinpath(zip_name.replace(".zip", ".shp"))
+        print(zip_name)
+        shp_name = zip_name.replace(".zip", ".shp")
+        shp_path = self.data_dir.joinpath(shp_name)
         if shp_path.exists():
             logger.debug(f"SHP already unzipped at {shp_path}")
             return shp_path
