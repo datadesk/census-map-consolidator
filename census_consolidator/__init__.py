@@ -25,7 +25,7 @@ class BlockConsolidator(object):
         self.zip_list = self.resolve_zipfiles()
         self.shp_list = self.resolve_shapefiles()
         if data_dir:
-            self.data_dir = data_dir
+            self.data_dir = pathlib.Path(str(data_dir))
         else:
             self.data_dir = self.THIS_DIR.joinpath("data")
             if not self.data_dir.exists():
