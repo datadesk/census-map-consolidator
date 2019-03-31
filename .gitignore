@@ -3,3 +3,4 @@ build
 *.egg*
 .coverage
 *.pyc
+census_map_consolidator/data

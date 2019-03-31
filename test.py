@@ -50,7 +50,7 @@ class CensusConsolidateTest(unittest.TestCase):
         client.consolidate()
 
     def tearDown(self):
-        for p in pathlib.Path("census_consolidator/data").glob("*"):
+        for p in pathlib.Path("census_map_consolidator/data").glob("*"):
             p.unlink()
 
 
