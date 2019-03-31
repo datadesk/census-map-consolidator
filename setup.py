@@ -2,14 +2,14 @@ from setuptools import setup
 
 
 setup(
-    name='census-consolidator',
+    name='census-map-consolidator',
     version='0.0.4',
-    description="Combine Census blocks into new shapes",
+    description="Combine Census maps into new shapes",
     author='Ben Welsh',
     author_email='ben.welsh@gmail.com',
-    url='http://www.github.com/datadesk/census-consolidator',
+    url='http://www.github.com/datadesk/census-map-consolidator',
     license="MIT",
-    packages=("census_consolidator",),
+    packages=("census_map_consolidator",),
     install_requires=(
         "geopandas"
     ),

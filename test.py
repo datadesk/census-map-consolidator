@@ -1,6 +1,6 @@
 import unittest
 import pathlib
-import census_consolidator
+import census_map_consolidator
 
 
 class CensusConsolidateTest(unittest.TestCase):
@@ -16,7 +16,7 @@ class CensusConsolidateTest(unittest.TestCase):
         with open(self.data_dir.joinpath("dtla.csv"), "r") as f:
             self.dtla_block_list = f.read().splitlines()
 
-        self.consolidate_client = census_consolidator.BlockConsolidator(
+        self.consolidate_client = census_map_consolidator.BlockConsolidator(
             *self.dtla_block_list,
             data_dir=self.data_dir
         )
@@ -46,7 +46,7 @@ class CensusConsolidateTest(unittest.TestCase):
         self.consolidate_client.write(self.data_dir.joinpath("dtla.geojson"))
 
     def test_download_shapefile(self):
-        client = census_consolidator.BlockConsolidator(*['191434601001000', '191434601001001'])
+        client = census_map_consolidator.BlockConsolidator(*['191434601001000', '191434601001001'])
         client.consolidate()
 
     def tearDown(self):

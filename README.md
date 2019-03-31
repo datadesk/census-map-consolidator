@@ -1,11 +1,11 @@
-# census-consolidator
+# census-map-consolidator
 
 Combine Census blocks into new shapes.
 
 ### Installation
 
 ```bash
-$ pipenv install census-consolidator
+$ pipenv install census-map-consolidator
 ```
 
 ### Usage
@@ -26,7 +26,7 @@ with open("test_data/dtla.csv"), "r") as f:
 Import our class.
 
 ```python
->>> from census_consolidator import BlockConsolidator
+>>> from census_map_consolidator import BlockConsolidator
 ```
 
 Pass in the block list as arguments.
