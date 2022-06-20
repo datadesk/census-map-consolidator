@@ -67,7 +67,7 @@ That's it. You can inspect your work however you like. But [geojsonio](https://g
 geojsonio < your-new-shape.geojson
 ```
 
-![dtla](assets/dtla.png)
+![dtla](_static/dtla.png)
 
 ## Links
 
