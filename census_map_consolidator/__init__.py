@@ -1,22 +1,24 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Where it happens.
 """
+import collections
 import json
+import logging
 import pathlib
 import zipfile
-import logging
-import collections
-import geopandas as gpd
 from urllib.request import urlretrieve
+
+import geopandas as gpd
+
 logger = logging.getLogger(__name__)
 
 
-class BlockConsolidator(object):
+class BlockConsolidator:
     """
     Consolidates the provided Census blocks into a new shape.
     """
+
     THIS_DIR = pathlib.Path(__file__).parent
 
     def __init__(self, *block_list, data_dir=None):
@@ -35,9 +37,9 @@ class BlockConsolidator(object):
         """
         Writes the consolidated SHP file to the provided path.
         """
-        if '.geojson' in str(path):
+        if ".geojson" in str(path):
             geojson = json.loads(self.consolidated_shp.to_json())
-            with open(path, 'w') as f:
+            with open(path, "w") as f:
                 f.write(json.dumps(geojson, indent=4))
         else:
             self.consolidated_shp.to_file(path)
@@ -62,17 +64,19 @@ class BlockConsolidator(object):
         logger.debug(f"Loaded DataFrame with {len(gdf)} blocks")
 
         # Filter them down to only those in the block list
-        logger.debug(f"Filtering down to the {len(self.block_list)} GEOIDs in the provided block list")
-        gdf.loc[gdf.GEOID10.isin(self.block_list), 'to_dissolve'] = 1
+        logger.debug(
+            f"Filtering down to the {len(self.block_list)} GEOIDs in the provided block list"
+        )
+        gdf.loc[gdf.GEOID10.isin(self.block_list), "to_dissolve"] = 1
         filtered_gdf = gdf[gdf.to_dissolve == 1]
         logger.debug(f"{len(filtered_gdf)} blocks found")
 
         # Dissolve the shapes together
         logger.debug("Dissolving the geometries")
-        dissolved_shape = filtered_gdf.dissolve(by='to_dissolve')
+        dissolved_shape = filtered_gdf.dissolve(by="to_dissolve")
 
         # Trime and project
-        consolidated_shp = dissolved_shape[['geometry']].to_crs(epsg=4326)
+        consolidated_shp = dissolved_shape[["geometry"]].to_crs(epsg=4326)
 
         # Hook it to the instance
         self.consolidated_shp = consolidated_shp
@@ -108,12 +112,14 @@ class BlockConsolidator(object):
 
         Documentation: https://www.census.gov/geo/reference/geoidentifiers.html
         """
-        return collections.OrderedDict((
-            ("state", geoid[:2]),
-            ("county", geoid[2:5]),
-            ("tract", geoid[5:11]),
-            ("block", geoid[11:]),
-        ))
+        return collections.OrderedDict(
+            (
+                ("state", geoid[:2]),
+                ("county", geoid[2:5]),
+                ("tract", geoid[5:11]),
+                ("block", geoid[11:]),
+            )
+        )
 
     def download_zipfile(self, zip_name):
         """

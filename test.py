@@ -1,5 +1,6 @@
-import unittest
 import pathlib
+import unittest
+
 import census_map_consolidator
 
 
@@ -13,20 +14,19 @@ class CensusConsolidateTest(unittest.TestCase):
         self.osceola_county_ia = "19143"
         self.la_county_ca = "06037"
 
-        with open(self.data_dir.joinpath("dtla.csv"), "r") as f:
+        with open(self.data_dir.joinpath("dtla.csv")) as f:
             self.dtla_block_list = f.read().splitlines()
 
         self.consolidate_client = census_map_consolidator.BlockConsolidator(
-            *self.dtla_block_list,
-            data_dir=self.data_dir
+            *self.dtla_block_list, data_dir=self.data_dir
         )
 
     def test_parse_geoid(self):
         geoid_dict = self.consolidate_client.parse_geoid(self.dtla_block)
-        self.assertEqual(geoid_dict['state'], '06')
-        self.assertEqual(geoid_dict['county'], '037')
-        self.assertEqual(geoid_dict['tract'], '197600')
-        self.assertEqual(geoid_dict['block'], '1008')
+        self.assertEqual(geoid_dict["state"], "06")
+        self.assertEqual(geoid_dict["county"], "037")
+        self.assertEqual(geoid_dict["tract"], "197600")
+        self.assertEqual(geoid_dict["block"], "1008")
 
     def test_resolve_counties(self):
         counties = self.consolidate_client.resolve_counties()
@@ -46,7 +46,9 @@ class CensusConsolidateTest(unittest.TestCase):
         self.consolidate_client.write(self.data_dir.joinpath("dtla.geojson"))
 
     def test_download_shapefile(self):
-        client = census_map_consolidator.BlockConsolidator(*['191434601001000', '191434601001001'])
+        client = census_map_consolidator.BlockConsolidator(
+            *["191434601001000", "191434601001001"]
+        )
         client.consolidate()
 
     def tearDown(self):
@@ -54,5 +56,5 @@ class CensusConsolidateTest(unittest.TestCase):
             p.unlink()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
