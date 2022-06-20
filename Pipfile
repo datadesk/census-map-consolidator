@@ -5,11 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
-coverage = "*"
 twine = "*"
+setuptools-scm = "*"
+pre-commit = "*"
+sphinx = "*"
+myst-parser = "*"
 
 [packages]
 geopandas = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.9"
