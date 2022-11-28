@@ -59,8 +59,6 @@ That's it. You can inspect your work however you like. But [geojsonio](https://g
 geojsonio < your-new-shape.geojson
 ```
 
-![dtla](_static/dtla.png)
-
 ## Links
 
 * Issues: [github.com/datadesk/census-map-consolidator/issues](https://github.com/datadesk/census-map-consolidator/issues)
